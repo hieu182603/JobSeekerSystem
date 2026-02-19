@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import LandingPage from './pages/LandingPage';
+import CVUpload from './pages/CVUpload';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -30,6 +31,11 @@ function App() {
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/cv-upload" element={
+            <ProtectedRoute>
+              <CVUpload />
             </ProtectedRoute>
           } />
           <Route path="/" element={<LandingPage />} />
