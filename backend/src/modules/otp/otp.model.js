@@ -69,3 +69,7 @@ otpSchema.pre("save", function (next) {
 
 export const OtpModel = mongoose.model("Otp", otpSchema);
 
+
+
+
+
