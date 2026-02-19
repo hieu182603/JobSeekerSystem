@@ -52,8 +52,8 @@ export default function Register() {
     };
 
     return (
-        <div className="min-h-screen flex">
-            <div className="w-1/2 bg-gradient-to-br from-cyan-100 via-cyan-50 to-white flex flex-col items-center justify-center p-12 relative overflow-hidden">
+        <div className="min-h-screen flex flex-col md:flex-row">
+            <div className="w-full md:w-1/2 bg-gradient-to-br from-cyan-100 via-cyan-50 to-white hidden md:flex flex-col items-center justify-center p-12 relative overflow-hidden">
                 <div className="absolute top-20 right-20 w-64 h-64 bg-cyan-200 rounded-full opacity-20"></div>
                 <div className="absolute bottom-20 left-10 w-48 h-48 bg-cyan-300 rounded-full opacity-15"></div>
 
@@ -77,7 +77,7 @@ export default function Register() {
                 </div>
             </div>
 
-            <div className="w-1/2 bg-white flex items-center justify-center p-12">
+            <div className="w-full md:w-1/2 bg-white flex items-center justify-center p-8 md:p-12">
                 <div className="w-full max-w-md">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">Tạo tài khoản mới</h1>
                     <p className="text-gray-600 mb-8">Bắt đầu hành trình tìm kiếm sự nghiệp của bạn ngay hôm nay</p>
@@ -99,8 +99,8 @@ export default function Register() {
                             type="button"
                             onClick={() => setUserType('candidate')}
                             className={`flex-1 py-3 px-4 rounded-lg border-2 transition-all flex items-center justify-center gap-2 ${userType === 'candidate'
-                                    ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
-                                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                                ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
+                                : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
                                 }`}
                         >
                             <User size={20} />
@@ -110,8 +110,8 @@ export default function Register() {
                             type="button"
                             onClick={() => setUserType('employer')}
                             className={`flex-1 py-3 px-4 rounded-lg border-2 transition-all flex items-center justify-center gap-2 ${userType === 'employer'
-                                    ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
-                                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                                ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
+                                : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
                                 }`}
                         >
                             <Briefcase size={20} />

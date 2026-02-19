@@ -89,14 +89,36 @@ export default function Dashboard() {
         }
     ];
 
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
     return (
         <div className="flex h-screen bg-gray-50">
-            <aside className="w-64 bg-white border-r border-gray-200 p-4">
-                <div className="flex items-center gap-2 mb-8 px-2">
-                    <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center">
-                        <Briefcase className="text-white" size={20} />
+            {/* Mobile Sidebar Overlay */}
+            {sidebarOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 z-20 lg:hidden"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
+
+            {/* Sidebar */}
+            <aside className={`
+        fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 p-4 transform transition-transform duration-200 ease-in-out
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+                <div className="flex items-center justify-between mb-8 px-2">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center">
+                            <Briefcase className="text-white" size={20} />
+                        </div>
+                        <span className="font-bold text-lg">Recruit Pro</span>
                     </div>
-                    <span className="font-bold text-lg">Recruit Pro</span>
+                    <button
+                        className="lg:hidden text-gray-500 hover:text-gray-700"
+                        onClick={() => setSidebarOpen(false)}
+                    >
+                        <ChevronRight className="rotate-180" size={24} />
+                    </button>
                 </div>
 
                 <nav className="space-y-1">
@@ -144,7 +166,7 @@ export default function Dashboard() {
 
                 <div className="mt-auto pt-8 border-t border-gray-200">
                     <div className="flex items-center gap-3 px-3 py-2 mb-2">
-                        <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-full flex items-center justify-center text-white font-semibold">
+                        <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">
                             {profile?.name?.charAt(0) || 'U'}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -158,42 +180,48 @@ export default function Dashboard() {
                 </div>
             </aside>
 
-            <main className="flex-1 overflow-auto">
-                <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
-                    <div className="flex-1 max-w-xl">
-                        <div className="relative">
+            <main className="flex-1 overflow-auto w-full">
+                <header className="bg-white border-b border-gray-200 px-4 lg:px-8 py-4 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4 flex-1 lg:max-w-xl">
+                        <button
+                            className="lg:hidden text-gray-500"
+                            onClick={() => setSidebarOpen(true)}
+                        >
+                            <Briefcase size={24} />
+                        </button>
+                        <div className="relative flex-1">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                             <input
                                 type="text"
-                                placeholder="Tìm kiếm ứng viên theo tên, vị trí..."
-                                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                                placeholder="Tìm kiếm..."
+                                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm"
                             />
                         </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                    <div className="flex items-center gap-2 lg:gap-4">
+                        <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg hidden sm:block">
                             <Bell size={22} />
                             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
                         </button>
-                        <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                        <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg hidden sm:block">
                             <MessageSquare size={22} />
                         </button>
                         <button
                             onClick={() => signOut()}
-                            className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors text-sm font-medium"
+                            className="px-3 py-2 lg:px-4 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors text-xs lg:text-sm font-medium whitespace-nowrap"
                         >
                             Đăng xuất
                         </button>
                     </div>
                 </header>
 
-                <div className="p-8">
+                <div className="p-4 lg:p-8">
                     <div className="mb-8">
-                        <h1 className="text-2xl font-bold text-gray-900 mb-1">Chào mừng trở lại!</h1>
-                        <p className="text-gray-600">Hôm nay có 45 ứng viên mới đang chờ bạn xem xét</p>
+                        <h1 className="text-xl lg:text-2xl font-bold text-gray-900 mb-1">Chào mừng trở lại!</h1>
+                        <p className="text-sm lg:text-base text-gray-600">Hôm nay có 45 ứng viên mới đang chờ bạn xem xét</p>
                     </div>
 
-                    <div className="grid grid-cols-4 gap-6 mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
                         {stats.map((stat, index) => (
                             <div key={index} className="bg-white rounded-xl p-6 border border-gray-100 hover:shadow-lg transition-shadow">
                                 <div className="flex items-center justify-between mb-4">
@@ -208,8 +236,8 @@ export default function Dashboard() {
                         ))}
                     </div>
 
-                    <div className="grid grid-cols-3 gap-6">
-                        <div className="col-span-2 space-y-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div className="lg:col-span-2 space-y-6">
                             <div className="bg-white rounded-xl p-6 border border-gray-100">
                                 <div className="flex items-center justify-between mb-6">
                                     <h2 className="text-lg font-bold text-gray-900">Quản lý quảng cáo</h2>
@@ -239,10 +267,10 @@ export default function Dashboard() {
                                                     alt={campaign.title}
                                                     className="w-20 h-20 rounded-lg object-cover"
                                                 />
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <h4 className="font-semibold text-gray-900">{campaign.title}</h4>
-                                                        <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded">
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
+                                                        <h4 className="font-semibold text-gray-900 truncate">{campaign.title}</h4>
+                                                        <span className="w-fit px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded">
                                                             {campaign.tag}
                                                         </span>
                                                     </div>

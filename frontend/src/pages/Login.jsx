@@ -28,8 +28,8 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex">
-            <div className="w-1/2 bg-gradient-to-br from-cyan-200 to-cyan-300 flex flex-col items-center justify-center p-12 relative overflow-hidden">
+        <div className="min-h-screen flex flex-col md:flex-row">
+            <div className="w-full md:w-1/2 bg-gradient-to-br from-cyan-200 to-cyan-300 hidden md:flex flex-col items-center justify-center p-12 relative overflow-hidden">
                 <div className="absolute top-8 left-8 w-16 h-16 bg-white rounded-full opacity-30"></div>
                 <div className="absolute bottom-12 right-12 w-40 h-40 bg-white rounded-full opacity-20"></div>
 
@@ -52,7 +52,7 @@ export default function Login() {
                 </div>
             </div>
 
-            <div className="w-1/2 bg-white flex items-center justify-center p-12">
+            <div className="w-full md:w-1/2 bg-white flex items-center justify-center p-8 md:p-12">
                 <div className="w-full max-w-md">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">Chào mừng trở lại</h1>
                     <p className="text-gray-600 mb-8">Vui lòng nhập thông tin để truy cập tài khoản</p>
