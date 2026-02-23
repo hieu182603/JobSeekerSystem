@@ -144,8 +144,8 @@ export default function Profile() {
                         <button
                             onClick={() => { setActiveTab('general'); setMessage({ type: '', text: '' }) }}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${activeTab === 'general'
-                                    ? 'bg-cyan-50 text-cyan-700'
-                                    : 'text-gray-600 hover:bg-gray-100'
+                                ? 'bg-cyan-50 text-cyan-700'
+                                : 'text-gray-600 hover:bg-gray-100'
                                 }`}
                         >
                             <User size={18} />
@@ -156,8 +156,8 @@ export default function Profile() {
                             <button
                                 onClick={() => { setActiveTab('professional'); setMessage({ type: '', text: '' }) }}
                                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${activeTab === 'professional'
-                                        ? 'bg-cyan-50 text-cyan-700'
-                                        : 'text-gray-600 hover:bg-gray-100'
+                                    ? 'bg-cyan-50 text-cyan-700'
+                                    : 'text-gray-600 hover:bg-gray-100'
                                     }`}
                             >
                                 <Briefcase size={18} />
@@ -169,8 +169,8 @@ export default function Profile() {
                             <button
                                 onClick={() => { setActiveTab('company'); setMessage({ type: '', text: '' }) }}
                                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${activeTab === 'company'
-                                        ? 'bg-cyan-50 text-cyan-700'
-                                        : 'text-gray-600 hover:bg-gray-100'
+                                    ? 'bg-cyan-50 text-cyan-700'
+                                    : 'text-gray-600 hover:bg-gray-100'
                                     }`}
                             >
                                 <Building size={18} />
@@ -181,8 +181,8 @@ export default function Profile() {
                         <button
                             onClick={() => { setActiveTab('security'); setMessage({ type: '', text: '' }) }}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${activeTab === 'security'
-                                    ? 'bg-cyan-50 text-cyan-700'
-                                    : 'text-gray-600 hover:bg-gray-100'
+                                ? 'bg-cyan-50 text-cyan-700'
+                                : 'text-gray-600 hover:bg-gray-100'
                                 }`}
                         >
                             <Lock size={18} />
@@ -205,13 +205,42 @@ export default function Profile() {
                             {activeTab === 'general' && (
                                 <form onSubmit={handleSaveProfile} className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                                     <div className="flex items-center gap-6 pb-6 border-b border-gray-100">
-                                        <div className="relative group cursor-pointer">
-                                            <div className="w-24 h-24 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-md">
-                                                {formData.name.charAt(0) || 'U'}
-                                            </div>
+                                        <div
+                                            className="relative group cursor-pointer"
+                                            onClick={() => document.getElementById('avatar-upload').click()}
+                                        >
+                                            {formData.avatar ? (
+                                                <div className="w-24 h-24 rounded-full overflow-hidden shadow-md">
+                                                    <img src={formData.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                                                </div>
+                                            ) : (
+                                                <div className="w-24 h-24 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-md">
+                                                    {formData.name.charAt(0) || 'U'}
+                                                </div>
+                                            )}
                                             <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <Camera className="text-white" size={24} />
                                             </div>
+                                            <input
+                                                id="avatar-upload"
+                                                type="file"
+                                                accept="image/png, image/jpeg, image/jpg"
+                                                className="hidden"
+                                                onChange={(e) => {
+                                                    const file = e.target.files[0];
+                                                    if (file) {
+                                                        if (file.size > 2 * 1024 * 1024) {
+                                                            setMessage({ type: 'error', text: 'Kích thước ảnh tối đa 2MB' });
+                                                            return;
+                                                        }
+                                                        const reader = new FileReader();
+                                                        reader.onloadend = () => {
+                                                            setFormData({ ...formData, avatar: reader.result });
+                                                        };
+                                                        reader.readAsDataURL(file);
+                                                    }
+                                                }}
+                                            />
                                         </div>
                                         <div>
                                             <h3 className="text-lg font-semibold text-gray-900">Ảnh đại diện</h3>
