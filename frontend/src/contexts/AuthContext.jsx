@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const checkAuth = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     if (!token) {
       setLoading(false);
       return;
@@ -33,13 +33,14 @@ export function AuthProvider({ children }) {
     } catch (err) {
       console.error("Auth check failed:", err);
       localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
       setUser(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const signIn = async (email, password) => {
+  const signIn = async (email, password, rememberMe = false) => {
     try {
       const response = await axios.post(`${API_URL}/api/auth/login`, {
         email,
@@ -47,25 +48,31 @@ export function AuthProvider({ children }) {
       });
 
       const { token, user } = response.data;
-      localStorage.setItem('token', token);
+
+      if (rememberMe) {
+        localStorage.setItem('token', token);
+      } else {
+        sessionStorage.setItem('token', token);
+      }
+
       setUser(user);
       return { error: null };
     } catch (err) {
-        console.error("Login failed:", err);
-      return { 
-        error: { 
-          message: err.response?.data?.message || 'Đăng nhập thất bại' 
-        } 
+      console.error("Login failed:", err);
+      return {
+        error: {
+          message: err.response?.data?.message || 'Đăng nhập thất bại'
+        }
       };
     }
   };
 
   const signUp = async (email, password, fullName, userType) => {
     try {
-        // Map frontend role to backend role
-        // candidate -> JOB_SEEKER
-        // employer -> EMPLOYER
-        const role = userType === 'candidate' ? 'JOB_SEEKER' : 'EMPLOYER';
+      // Map frontend role to backend role
+      // candidate -> JOB_SEEKER
+      // employer -> EMPLOYER
+      const role = userType === 'candidate' ? 'JOB_SEEKER' : 'EMPLOYER';
 
       const response = await axios.post(`${API_URL}/api/auth/register`, {
         email,
@@ -77,17 +84,18 @@ export function AuthProvider({ children }) {
       // Backend returns { message, userId, email } but NO token immediately (needs OTP)
       return { error: null, data: response.data };
     } catch (err) {
-        console.error("Register failed:", err);
-      return { 
-        error: { 
-          message: err.response?.data?.message || 'Đăng ký thất bại' 
-        } 
+      console.error("Register failed:", err);
+      return {
+        error: {
+          message: err.response?.data?.message || 'Đăng ký thất bại'
+        }
       };
     }
   };
 
   const signOut = () => {
     localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     setUser(null);
   };
 
