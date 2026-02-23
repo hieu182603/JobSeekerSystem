@@ -10,6 +10,7 @@ import { swaggerSpec } from "./config/swagger.js";
 
 import { authRouter } from "./modules/auth/auth.router.js";
 import { cvRouter } from "./modules/cv/cv.router.js";
+import { userRouter } from "./modules/users/user.router.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -50,6 +51,7 @@ app.use(
 // REGISTER ROUTES
 app.use("/api/auth", authRouter);
 app.use("/api/cv", cvRouter);
+app.use("/api/users", userRouter);
 
 // Error handler
 app.use((err, _req, res, _next) => {
