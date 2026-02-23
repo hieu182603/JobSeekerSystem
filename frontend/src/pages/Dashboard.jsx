@@ -279,15 +279,30 @@ export default function Dashboard() {
                                     </button>
                                 </div>
 
-                                <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-lg p-8 text-center mb-6">
+                                <div
+                                    className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-lg p-8 text-center mb-6 cursor-pointer hover:bg-cyan-100 transition-colors"
+                                    onClick={() => document.getElementById('ad-upload').click()}
+                                >
                                     <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
                                         <ImageIcon className="text-cyan-500" size={32} />
                                     </div>
                                     <h3 className="font-semibold text-gray-900 mb-2">Tải lên Banner / Poster quảng cáo mới</h3>
                                     <p className="text-sm text-gray-600 mb-4">PNG, JPEG, PDF (Kích thước tối đa: 5MB). Tỷ lệ khuyến nghị: 16:9 </p>
-                                    <button className="px-6 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors text-sm font-medium">
+                                    <button className="px-6 py-2 bg-cyan-500 text-white rounded-lg transition-colors text-sm font-medium">
                                         Chọn tệp tin
                                     </button>
+                                    <input
+                                        type="file"
+                                        id="ad-upload"
+                                        className="hidden"
+                                        accept="image/png, image/jpeg, application/pdf"
+                                        onChange={(e) => {
+                                            const file = e.target.files[0];
+                                            if (file) {
+                                                alert(`Đã chọn file: ${file.name}`);
+                                            }
+                                        }}
+                                    />
                                 </div>
 
                                 <div>
