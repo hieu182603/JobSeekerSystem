@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import NotificationDropdown from '../components/ui/NotificationDropdown';
+import { useNavigate } from 'react-router-dom';
 import {
     FileText,
     Eye,
@@ -21,6 +22,7 @@ import {
 
 export default function Dashboard() {
     const { user, signOut } = useAuth();
+    const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
     const [activeMenu, setActiveMenu] = useState('home');
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -181,7 +183,10 @@ export default function Dashboard() {
                 </nav>
 
                 <div className="mt-auto px-2 flex-shrink-0">
-                    <div className="flex items-center gap-3 px-2 py-3 mb-2 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group">
+                    <div
+                        onClick={() => navigate('/profile')}
+                        className="flex items-center gap-3 px-2 py-3 mb-2 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group"
+                    >
                         <div className="w-10 h-10 bg-[#00b5d8] rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
                             {profile?.name?.charAt(0) || 'C'}
                         </div>
