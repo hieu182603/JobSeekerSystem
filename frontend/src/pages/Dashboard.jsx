@@ -1,6 +1,7 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import NotificationDropdown from '../components/ui/NotificationDropdown';
 import {
     FileText,
     Eye,
@@ -22,6 +23,21 @@ export default function Dashboard() {
     const { user, signOut } = useAuth();
     const [profile, setProfile] = useState(null);
     const [activeMenu, setActiveMenu] = useState('home');
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+    const notificationRef = useRef(null);
+    const bellRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (notificationRef.current && !notificationRef.current.contains(event.target) &&
+                bellRef.current && !bellRef.current.contains(event.target)) {
+                setIsNotificationOpen(false);
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     useEffect(() => {
         if (user) {
@@ -103,10 +119,10 @@ export default function Dashboard() {
 
             {/* Sidebar */}
             <aside className={`
-        fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 p-4 transform transition-transform duration-200 ease-in-out
+        fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 p-4 transform transition-transform duration-200 ease-in-out flex flex-col
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
-                <div className="flex items-center justify-between mb-8 px-2">
+                <div className="flex items-center justify-between mb-8 px-2 flex-shrink-0">
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center">
                             <Briefcase className="text-white" size={20} />
@@ -121,7 +137,7 @@ export default function Dashboard() {
                     </button>
                 </div>
 
-                <nav className="space-y-1">
+                <nav className="space-y-1 flex-shrink-0">
                     <button
                         onClick={() => setActiveMenu('home')}
                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${activeMenu === 'home' ? 'bg-cyan-50 text-cyan-600' : 'text-gray-700 hover:bg-gray-50'
@@ -164,24 +180,24 @@ export default function Dashboard() {
                     </button>
                 </nav>
 
-                <div className="mt-auto pt-8 border-t border-gray-200">
-                    <div className="flex items-center gap-3 px-3 py-2 mb-2">
-                        <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">
-                            {profile?.name?.charAt(0) || 'U'}
+                <div className="mt-auto px-2 flex-shrink-0">
+                    <div className="flex items-center gap-3 px-2 py-3 mb-2 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group">
+                        <div className="w-10 h-10 bg-[#00b5d8] rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
+                            {profile?.name?.charAt(0) || 'C'}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="font-medium text-sm truncate">{profile?.name || 'User'}</p>
-                            <p className="text-xs text-gray-500">LeMint Tech</p>
+                            <p className="font-semibold text-[15px] text-[#0f2a4a] truncate">{profile?.name || 'Candidate User 2'}</p>
+                            <p className="text-[13px] text-gray-500 font-medium">LeMint Tech</p>
                         </div>
-                        <button className="text-gray-400 hover:text-gray-600">
-                            <ChevronRight size={16} />
+                        <button className="text-gray-400 group-hover:text-gray-600 transition-colors">
+                            <ChevronRight size={18} />
                         </button>
                     </div>
                 </div>
             </aside>
 
-            <main className="flex-1 overflow-auto w-full">
-                <header className="bg-white border-b border-gray-200 px-4 lg:px-8 py-4 flex items-center justify-between gap-4">
+            <main className="flex-1 overflow-auto w-full relative">
+                <header className="sticky top-0 z-20 bg-white border-b border-gray-200 px-4 lg:px-8 py-4 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4 flex-1 lg:max-w-xl">
                         <button
                             className="lg:hidden text-gray-500"
@@ -199,10 +215,22 @@ export default function Dashboard() {
                         </div>
                     </div>
                     <div className="flex items-center gap-2 lg:gap-4">
-                        <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg hidden sm:block">
-                            <Bell size={22} />
-                            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-                        </button>
+                        <div className="relative">
+                            <button
+                                ref={bellRef}
+                                onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                                className={`relative p-2 rounded-lg hidden sm:block transition-colors ${isNotificationOpen ? 'bg-cyan-50 text-cyan-600' : 'text-gray-600 hover:bg-gray-100'}`}
+                            >
+                                <Bell size={22} className={isNotificationOpen ? "fill-cyan-600" : ""} />
+                                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 border-2 border-white rounded-full"></span>
+                            </button>
+
+                            {isNotificationOpen && (
+                                <div ref={notificationRef}>
+                                    <NotificationDropdown onClose={() => setIsNotificationOpen(false)} />
+                                </div>
+                            )}
+                        </div>
                         <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg hidden sm:block">
                             <MessageSquare size={22} />
                         </button>
