@@ -8,7 +8,7 @@ import LandingPage from './pages/LandingPage';
 import CVUpload from './pages/CVUpload';
 import Profile from './pages/Profile';
 import ApplicationsList from './pages/ApplicationsList';
-import PostJob from './pages/PostJob';
+import CreateApplication from './pages/CreateApplication';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -51,11 +51,12 @@ function App() {
               <ApplicationsList />
             </ProtectedRoute>
           } />
-           <Route path="/post-job-application" element={
+           <Route path="/create" element={
             <ProtectedRoute>
-              <PostJob />
+              <CreateApplication />
             </ProtectedRoute>
           } />
+
 
           <Route path="/" element={<LandingPage />} />
         </Routes>

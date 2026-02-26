@@ -77,8 +77,40 @@ const getApplicationById = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+/**
+ * @swagger
+ * /api/applications:
+ *   post:
+ *     summary: Create new application
+ *     tags: [Application]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Application'
+ *     responses:
+ *       201:
+ *         description: Application created
+ *       400:
+ *         description: Bad request
+ */
+const createApplication = async (req, res) => {
+  try {
+    if (!req.body.recruiterId) {
+      return res.status(400).json({ message: "RecruiterId is required" });
+    }
+
+    const application = await Application.create(req.body);
+    res.status(201).json(application);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 
 export default {
   getAllApplications,
   getApplicationById,
+  createApplication,
 };
