@@ -9,7 +9,7 @@ import CVUpload from './pages/CVUpload';
 import Profile from './pages/Profile';
 import ApplicationsList from './pages/ApplicationsList';
 import CreateApplication from './pages/CreateApplication';
-
+import JobDetail from './pages/JobDetail'
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
 
@@ -51,13 +51,12 @@ function App() {
               <ApplicationsList />
             </ProtectedRoute>
           } />
-           <Route path="/create" element={
+          <Route path="/create" element={
             <ProtectedRoute>
               <CreateApplication />
             </ProtectedRoute>
           } />
-
-
+          <Route path="/applications/job/:jobId" element={<JobDetail />} />
           <Route path="/" element={<LandingPage />} />
         </Routes>
       </BrowserRouter>

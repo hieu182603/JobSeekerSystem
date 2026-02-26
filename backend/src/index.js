@@ -12,7 +12,7 @@ import { authRouter } from "./modules/auth/auth.router.js";
 import { cvRouter } from "./modules/cv/cv.router.js";
 import { userRouter } from "./modules/users/user.router.js";
 
-import applicationRouter from "./modules/application/application.router.js";
+import applicationRouter from "./modules/jobs/job.router.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

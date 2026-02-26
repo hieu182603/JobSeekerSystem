@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from "react-router-dom";
 
 function ApplicationsList() {
-  const { user, signOut } = useAuth(); 
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   const [jobs, setJobs] = useState([]);
@@ -107,8 +107,8 @@ function ApplicationsList() {
 
               <span
                 className={`inline-block px-3 py-1 rounded-full text-sm ${job.status === "open"
-                    ? "bg-green-100 text-green-700"
-                    : "bg-gray-200 text-gray-600"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-gray-200 text-gray-600"
                   }`}
               >
                 {job.status}
@@ -116,8 +116,8 @@ function ApplicationsList() {
 
               <div>
                 <button
-                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                  onClick={() => navigate(`/applications/${job._id}`)}
+                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  onClick={() => navigate(`/applications/job/${job._id}`)}
                 >
                   View Applications
                 </button>

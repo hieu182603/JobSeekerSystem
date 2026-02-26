@@ -72,7 +72,7 @@ function CreateApplication() {
         <div className="min-h-screen bg-gray-100 flex ">
             <SideBar
                 profile={user} />
-            <div className="w-full max-w-5xl ml-10">
+            <div className="w-full max-w-5xl ml-10 p-3">
                 <h1 className="text-2xl font-semibold mb-1">
                     Đăng Tin Tuyển Dụng
                 </h1>
