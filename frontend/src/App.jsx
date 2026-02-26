@@ -7,7 +7,7 @@ import Dashboard from './pages/Dashboard';
 import LandingPage from './pages/LandingPage';
 import CVUpload from './pages/CVUpload';
 import Profile from './pages/Profile';
-import JobApplication from './pages/JobApplicaiton';
+import ApplicationsList from './pages/ApplicationsList';
 import PostJob from './pages/PostJob';
 
 function ProtectedRoute({ children }) {
@@ -48,7 +48,7 @@ function App() {
           } />
           <Route path="/job-application" element={
             <ProtectedRoute>
-              <JobApplication />
+              <ApplicationsList />
             </ProtectedRoute>
           } />
            <Route path="/post-job-application" element={
