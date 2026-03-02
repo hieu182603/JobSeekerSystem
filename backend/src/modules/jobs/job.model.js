@@ -4,30 +4,42 @@ const JobSchema = new mongoose.Schema(
   {
     recruiterId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: "User",
+      required: true,
     },
     title: {
       type: String,
       required: true,
+      trim: true,
     },
-    description: String,
+    description: {
+      type: String,
+      required: true,
+    },
     requirements: String,
-    jobType: String,
+    jobType: {
+      type: String,
+      enum: ["full-time", "part-time", "remote", "internship"],
+      default: "full-time",
+    },
     salary: {
-      min: Number,
-      max: Number,
-      currency: {
-        type: String,
-        default: "USD",
-      },
+      min: { type: Number, default: 0 },
+      max: { type: Number, default: 0 },
+      currency: { type: String, default: "USD" },
     },
     location: {
       city: String,
       country: String,
     },
+
+    isPremium: {
+      type: Boolean,
+      default: false,
+    },
+
     status: {
       type: String,
+      enum: ["open", "closed"],
       default: "open",
     },
     views: {
@@ -45,6 +57,4 @@ const JobSchema = new mongoose.Schema(
   }
 );
 
-const Jobs = mongoose.model("Job", JobSchema);
-
-export default Jobs;
+export default mongoose.model("Job", JobSchema);

@@ -1,16 +1,43 @@
 import express from "express";
 import controller from "./job.controller.js";
+import { authMiddleware } from "../../middleware/auth.middleware.js";
+import Job from "./job.model.js";
 
 const router = express.Router();
 
-// Lấy toàn bộ danh sách đơn ứng tuyển (Admin dùng)
-router.get("/", controller.getAllApplications);
+/* ===== JOB ===== */
+router.post("/", authMiddleware, async (req, res) => {
+    try {
+        console.log("USER FROM TOKEN:", req.user); // 🔥 debug
 
-// Tạo đơn ứng tuyển mới (Job Seeker dùng)
-router.post("/", controller.createApplication);
+        const job = new Job({
+            ...req.body,
+            recruiterId: req.user.userId
+        });
 
-// Lấy chi tiết 1 Job và các ứng viên đã apply vào Job đó
-// Route này sẽ gọi hàm có logic populate 3 bảng mà chúng ta vừa viết
-router.get("/job/:jobId", controller.getJobDetailsWithApplicants); 
+        await job.save();
+
+        res.status(201).json(job);
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ message: error.message });
+    }
+});
+
+
+
+
+/* ===== RECRUITER XEM DANH SÁCH APPLY ===== */
+router.get(
+    "/job-applications/:jobId",
+    authMiddleware,
+    controller.getJobDetail
+);
+
+
+router.get("/job-application", authMiddleware, controller.getMyJobs);
+
+router.patch("/:jobId/toggle-status", authMiddleware, controller.toggleJobStatus);
+
 
 export default router;

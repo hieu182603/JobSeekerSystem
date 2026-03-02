@@ -1,73 +1,132 @@
-import Job from "./job.model.js";
-import JobApplicationModel from "./jobApplication.model.js";
 import mongoose from "mongoose";
+import Job from "./job.model.js";
+import JobApplication from "../Application/jobApplication.model.js";
 
-/**
- * @swagger
- * tags:
- *   name: Application
- *   description: Job application management
- */
-
-/**
- * @swagger
- * /api/applications:
- *   get:
- *     summary: Get all applications
- *     tags: [Application]
- *     responses:
- *       200:
- *         description: List of applications
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Application'
- *       500:
- *         description: Server error
- */
-const getAllApplications = async (req, res) => {
+/* ========================= */
+/* Tạo Job */
+/* ========================= */
+const createJob = async (req, res) => {
   try {
-    const applications = await Job.find()
-      .sort({ createdAt: -1 });
+    const job = await Job.create({
+      ...req.body,
+      recruiterId: req.user.userId, // lấy từ middleware
+    });
 
-    res.status(200).json(applications);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(201).json({
+      message: "Tạo job thành công",
+      data: job,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
-/**
- * @swagger
- * /api/applications/{jobId}:
- *   get:
- *     summary: Get job by ID
- *     tags: [Job]
- *     parameters:
- *       - in: path
- *         name: jobId
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Job detail
- *       400:
- *         description: Invalid jobId
- *       404:
- *         description: Job not found
- *       500:
- *         description: Server error
- */
-const getJobById = async (req, res) => {
+/* ========================= */
+/* Apply Job */
+/* ========================= */
+const applyJob = async (req, res) => {
   try {
-    const { jobId } = req.params;
+    const { jobId, resumeUrl } = req.body;
+    const jobseekerId = req.user.userId; // 🔥 lấy từ token
 
-    if (!mongoose.isValidObjectId(jobId)) {
+    if (!mongoose.Types.ObjectId.isValid(jobId)) {
       return res.status(400).json({ message: "Invalid jobId" });
     }
 
+    // check job tồn tại
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    // 🔥 tránh apply trùng
+    const existed = await JobApplication.findOne({
+      jobId,
+      jobseekerId,
+    });
+
+    if (existed) {
+      return res.status(400).json({
+        message: "Bạn đã apply job này rồi",
+      });
+    }
+
+    const application = await JobApplication.create({
+      jobId,
+      jobseekerId,
+      recruiterId: job.recruiterId, // lưu recruiter luôn
+      resumeUrl,
+      status: "pending",
+    });
+
+    await Job.findByIdAndUpdate(jobId, {
+      $inc: { applicationsCount: 1 },
+    });
+
+    res.status(201).json({
+      message: "Apply thành công",
+      data: application,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/* ========================= */
+/* Recruiter lấy job của mình */
+/* ========================= */
+const getMyJobs = async (req, res) => {
+  try {
+    const recruiterId = req.user.userId;
+
+    const jobs = await Job.find({ recruiterId })
+      .sort({ isPremium: -1, createdAt: -1 })
+      .lean();
+
+    // 🔥 đếm số application realtime
+    const jobsWithCount = await Promise.all(
+      jobs.map(async (job) => {
+        const count = await JobApplication.countDocuments({
+          jobId: job._id,
+        });
+
+        return {
+          ...job,
+          applicationsCount: count,
+        };
+      })
+    );
+
+    res.status(200).json({
+      message: "Lấy danh sách job thành công",
+      count: jobsWithCount.length,
+      data: jobsWithCount,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Lỗi khi lấy danh sách job",
+    });
+  }
+};
+
+
+/* ========================= */
+/* Job Detail + Applicants */
+/* ========================= */
+const getJobDetail = async (req, res) => {
+  try {
+    const { jobId } = req.params;
+
+    // Check ObjectId hợp lệ
+    if (!mongoose.Types.ObjectId.isValid(jobId)) {
+      return res.status(400).json({ message: "Invalid jobId" });
+    }
+
+    // Lấy job detail
     const job = await Job.findById(jobId);
 
     if (!job) {
@@ -75,90 +134,56 @@ const getJobById = async (req, res) => {
     }
 
     res.status(200).json(job);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+
+  } catch (error) {
+    console.error("Get Job Detail Error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-/**
- * @swagger
- * /api/applications/job/{jobId}:
- * get:
- * summary: "Xem chi tiết 1 Job và danh sách ứng viên"
- * description: "Lấy thông tin công việc và toàn bộ danh sách User đã ứng tuyển."
- * tags: [Application]
- * parameters:
- * - in: path
- * name: jobId
- * required: true
- * schema:
- * type: string
- * description: "ID của công việc (ví dụ: 69a0122cc192...)"
- * responses:
- * 200:
- * description: "Thành công"
- * 404:
- * description: "Không tìm thấy Job"
- */
-const getJobDetailsWithApplicants = async (req, res) => {
+
+const toggleJobStatus = async (req, res) => {
   try {
     const { jobId } = req.params;
+    const recruiterId = req.user.userId;
 
-    // Truy vấn song song Job (bảng 1) và Applications (bảng 2)
-    const [job, applications] = await Promise.all([
-      Job.findById(jobId).lean(),
-      JobApplicationModel.find({ jobId }).populate("jobseekerId", "name email phone").lean()
-      // populate("jobseekerId") chính là liên kết sang bảng User (bảng 3)
-    ]);
-
-    if (!job) return res.status(404).json({ message: "Job không tồn tại" });
-
-    res.status(200).json({
-      ...job,
-      applicants: applications
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-
-
-/**
- * @swagger
- * /api/applications:
- *   post:
- *     summary: Create new application
- *     tags: [Application]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Application'
- *     responses:
- *       201:
- *         description: Application created
- *       400:
- *         description: Bad request
- */
-const createApplication = async (req, res) => {
-  try {
-    if (!req.body.recruiterId) {
-      return res.status(400).json({ message: "RecruiterId is required" });
+    // Check ObjectId hợp lệ
+    if (!mongoose.Types.ObjectId.isValid(jobId)) {
+      return res.status(400).json({ message: "Invalid jobId" });
     }
 
-    const application = await Job.create(req.body);
-    res.status(201).json(application);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    // Tìm job của recruiter
+    const job = await Job.findOne({
+      _id: jobId,
+      recruiterId,
+    });
+
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    // Toggle status
+    job.status = job.status === "open" ? "closed" : "open";
+
+    await job.save();
+
+    res.status(200).json({
+      message: "Job status updated successfully",
+      job,
+    });
+
+  } catch (error) {
+    console.error("Toggle Job Status Error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 export default {
-  getAllApplications,
-  getJobById,
-  createApplication,
-  getJobDetailsWithApplicants,
+  createJob,
+  applyJob,
+  getJobDetail,
+  getMyJobs,
+  toggleJobStatus
 };
