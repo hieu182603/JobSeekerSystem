@@ -25,13 +25,19 @@ router.post("/", authMiddleware, async (req, res) => {
 });
 
 
-/* ===== APPLY ===== */
-router.post("/apply", controller.applyJob);
+
 
 /* ===== RECRUITER XEM DANH SÁCH APPLY ===== */
-router.get("/:jobId/applicants", controller.getJobWithApplicants);
+router.get(
+    "/job-applications/:jobId",
+    authMiddleware,
+    controller.getJobDetail
+);
+
 
 router.get("/job-application", authMiddleware, controller.getMyJobs);
+
+router.patch("/:jobId/toggle-status", authMiddleware, controller.toggleJobStatus);
 
 
 export default router;

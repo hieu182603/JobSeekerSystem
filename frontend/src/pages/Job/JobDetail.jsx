@@ -3,10 +3,10 @@ import { useAuth } from '../../contexts/AuthContext';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-    Briefcase, Mail, Phone, FileText, Calendar, Loader2, 
-    ArrowLeft, MapPin, DollarSign, Clock, CheckCircle, 
-    Eye, ChevronRight, UserCheck 
+import {
+    Briefcase, Mail, Phone, FileText, Calendar, Loader2,
+    ArrowLeft, MapPin, DollarSign, Clock, CheckCircle,
+    Eye, ChevronRight, UserCheck
 } from 'lucide-react';
 
 const JobDetail = () => {
@@ -16,12 +16,26 @@ const JobDetail = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [updatingStatus, setUpdatingStatus] = useState(false);
+
+
 
     useEffect(() => {
         const fetchJobAndApplicants = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`http://localhost:4000/api/applications/job/${jobId}`);
+
+                const token = sessionStorage.getItem("token");
+
+                const response = await axios.get(
+                    `http://localhost:4000/api/jobs/job-applications/${jobId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
                 setData(response.data);
             } catch (err) {
                 setError(err.response?.data?.message || "Không thể tải dữ liệu công việc");
@@ -32,6 +46,32 @@ const JobDetail = () => {
 
         if (jobId) fetchJobAndApplicants();
     }, [jobId]);
+
+    const handleToggleStatus = async () => {
+        try {
+            setUpdatingStatus(true);
+            const token = sessionStorage.getItem("token");
+
+            const response = await axios.patch(
+                `http://localhost:4000/api/jobs/${jobId}/toggle-status`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            // Update UI ngay lập tức
+            setData(response.data.job);
+
+        } catch (err) {
+            alert("Không thể cập nhật trạng thái");
+        } finally {
+            setUpdatingStatus(false);
+        }
+    };
+
 
     if (loading) return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
@@ -51,10 +91,12 @@ const JobDetail = () => {
         </div>
     );
 
+
+
     return (
         <div className="flex min-h-screen bg-[#F8FAFC]">
             <SideBar profile={user} />
-            
+
             <div className="flex-1 p-8 overflow-y-auto">
                 {/* Header & Back Button */}
                 <div className="flex items-center justify-between mb-8">
@@ -109,79 +151,7 @@ const JobDetail = () => {
                             </div>
                         </div>
 
-                        {/* DANH SÁCH ỨNG VIÊN */}
-                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                            <div className="p-6 border-b border-gray-50 flex justify-between items-center bg-white">
-                                <h2 className="text-xl font-bold text-gray-900 flex items-center">
-                                    <UserCheck className="w-5 h-5 mr-2 text-blue-600" />
-                                    Danh sách ứng tuyển
-                                    <span className="ml-3 bg-blue-50 text-blue-600 text-xs font-bold px-2.5 py-1 rounded-full">
-                                        {data.applicants?.length || 0}
-                                    </span>
-                                </h2>
-                            </div>
 
-                            <div className="overflow-x-auto">
-                                <table className="w-full">
-                                    <thead className="bg-gray-50/50 text-gray-400 text-[11px] uppercase tracking-widest font-bold">
-                                        <tr>
-                                            <th className="p-5 text-left">Ứng viên</th>
-                                            <th className="p-5 text-center">Trạng thái</th>
-                                            <th className="p-5 text-left">Ngày nộp</th>
-                                            <th className="p-5 text-right">Hành động</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-50">
-                                        {data.applicants?.map((app) => (
-                                            <tr key={app._id} className="hover:bg-blue-50/20 transition-all group">
-                                                <td className="p-5">
-                                                    <div className="flex items-center">
-                                                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold shadow-sm mr-4">
-                                                            {app.jobseekerId?.name?.charAt(0).toUpperCase()}
-                                                        </div>
-                                                        <div>
-                                                            <p className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{app.jobseekerId?.name}</p>
-                                                            <div className="flex flex-col text-xs text-gray-400 mt-0.5">
-                                                                <span className="flex items-center mt-1"><Mail className="w-3 h-3 mr-1.5 text-gray-300" /> {app.jobseekerId?.email}</span>
-                                                                <span className="flex items-center mt-1"><Phone className="w-3 h-3 mr-1.5 text-gray-300" /> {app.jobseekerId?.phone}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="p-5 text-center">
-                                                    <span className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-tighter ${
-                                                        app.status === 'pending' ? 'bg-amber-50 text-amber-600 border border-amber-100' : 'bg-green-50 text-green-600 border border-green-100'
-                                                    }`}>
-                                                        {app.status}
-                                                    </span>
-                                                </td>
-                                                <td className="p-5 text-sm text-gray-500 font-medium font-mono">
-                                                    {new Date(app.appliedAt || app.createdAt).toLocaleDateString('vi-VN')}
-                                                </td>
-                                                <td className="p-5 text-right">
-                                                    <a
-                                                        href={app.resumeUrl}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        className="inline-flex items-center bg-white border border-gray-200 px-4 py-2 rounded-xl text-gray-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all font-bold text-xs shadow-sm"
-                                                    >
-                                                        <FileText className="w-3.5 h-3.5 mr-2" /> CV
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                                {(!data.applicants || data.applicants.length === 0) && (
-                                    <div className="py-20 flex flex-col items-center justify-center text-gray-400">
-                                        <div className="bg-gray-50 p-4 rounded-full mb-4">
-                                            <FileText className="w-8 h-8 text-gray-200" />
-                                        </div>
-                                        <p className="italic text-sm">Chưa có ứng viên nào nộp đơn.</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
                     </div>
 
                     {/* CỘT PHẢI: THÔNG TIN NHANH */}
@@ -190,7 +160,7 @@ const JobDetail = () => {
                             <h3 className="text-gray-900 font-bold mb-6 flex items-center px-2">
                                 Tóm tắt công việc
                             </h3>
-                            
+
                             <div className="space-y-1">
                                 <div className="flex items-center p-4 hover:bg-gray-50 rounded-2xl transition-colors">
                                     <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center mr-4">
@@ -242,9 +212,28 @@ const JobDetail = () => {
                                 </div>
                             </div>
 
-                            <button className="w-full mt-6 bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-200 hover:bg-blue-700 hover:shadow-none transition-all flex items-center justify-center group">
-                                Quản lý trạng thái tuyển 
-                                <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                            {/* 🔥 BUTTON QUẢN LÝ TRẠNG THÁI */}
+                            <button
+                                onClick={handleToggleStatus}
+                                disabled={updatingStatus}
+                                className={`w-full mt-6 py-4 rounded-2xl font-bold transition-all flex items-center justify-center group ${data.status === 'open'
+                                    ? 'bg-red-600 hover:bg-red-700 text-white'
+                                    : 'bg-green-600 hover:bg-green-700 text-white'
+                                    } ${updatingStatus && "opacity-70 cursor-not-allowed"}`}
+                            >
+                                {updatingStatus ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                        Đang cập nhật...
+                                    </>
+                                ) : (
+                                    <>
+                                        {data.status === 'open'
+                                            ? 'Đóng tuyển dụng'
+                                            : 'Mở lại tuyển dụng'}
+                                        <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>

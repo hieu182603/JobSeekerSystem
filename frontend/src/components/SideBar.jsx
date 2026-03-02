@@ -55,25 +55,31 @@ const Sidebar = ({
           }}
         />
 
-        <MenuItem
+        {/* <MenuItem
           icon={<Users size={20} />}
           label="Tìm tuyển dụng"
           onClick={() => {
             setActiveMenu("candidates");
             navigate("/candidates");
           }}
-        />
+        /> */}
 
         <MenuItem
           icon={<Briefcase size={20} />}
           label="Quản lý công việc"
           onClick={() => {
-            setActiveMenu("jobs");
             navigate("/job-application");
           }}
         />
-
         <MenuItem
+          icon={<Users size={20} />}
+          label="Danh sách ứng viên"
+          onClick={() => {
+            navigate("/candidate");
+          }}
+        />
+
+        {/* <MenuItem
           icon={<BarChart3 size={20} />}
           label="Quản lý quảng cáo"
           onClick={() => setActiveMenu("analytics")}
@@ -83,7 +89,7 @@ const Sidebar = ({
           icon={<Settings size={20} />}
           label="Báo cáo theo quá"
           onClick={() => setActiveMenu("settings")}
-        />
+        /> */}
       </nav>
 
       {/* Profile */}

@@ -31,6 +31,12 @@ const JobSchema = new mongoose.Schema(
       city: String,
       country: String,
     },
+
+    isPremium: {
+      type: Boolean,
+      default: false,
+    },
+
     status: {
       type: String,
       enum: ["open", "closed"],

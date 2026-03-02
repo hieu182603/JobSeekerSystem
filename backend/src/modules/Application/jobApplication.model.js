@@ -14,8 +14,12 @@ const applicationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "accepted", "rejected"],
+      enum: ["pending", "interview", "accepted", "rejected"],
       default: "pending",
+    },
+    interviewDate: {
+      type: Date,
+      default: null,
     },
     resumeUrl: String,
   },
@@ -23,6 +27,16 @@ const applicationSchema = new mongoose.Schema(
     timestamps: true,
     collection: "job_applications",
   }
+);
+
+// Index tối ưu
+applicationSchema.index({ jobId: 1 });
+applicationSchema.index({ jobseekerId: 1 });
+
+// Ngăn apply trùng
+applicationSchema.index(
+  { jobId: 1, jobseekerId: 1 },
+  { unique: true }
 );
 
 export default mongoose.model("JobApplication", applicationSchema);

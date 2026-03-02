@@ -11,6 +11,7 @@ import ApplicationsList from './pages/Job/ApplicationsList';
 import CreateJob from './pages/Job/CreateApplication';
 import JobDetail from './pages/Job/JobDetail'
 import PaymentPage from './pages/Job/PaymentPage'
+import ManageCandidates from './pages/Job/ManageCandidates'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -58,9 +59,24 @@ function App() {
               <CreateJob />
             </ProtectedRoute>
           } />
-          <Route path="/applications/job/:jobId" element={<JobDetail />} />
           <Route path="/" element={<LandingPage />} />
           <Route path="/payment/:id" element={<PaymentPage />} />
+          <Route
+            path="/job-applications/:jobId"
+            element={
+              <ProtectedRoute>
+                <JobDetail />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/candidate"
+            element={
+              <ProtectedRoute>
+                <ManageCandidates />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

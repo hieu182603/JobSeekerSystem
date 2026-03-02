@@ -89,7 +89,7 @@ function CreateJob() {
       if (form.isPremium) {
         navigate(`/payment/${data._id}`);
       } else {
-        navigate("/recruiter/jobs");
+        navigate("/job-application");
       }
     } catch (err) {
       console.error(err);
