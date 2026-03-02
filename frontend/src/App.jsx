@@ -7,9 +7,11 @@ import Dashboard from './pages/Dashboard';
 import LandingPage from './pages/LandingPage';
 import CVUpload from './pages/CVUpload';
 import Profile from './pages/Profile';
-import ApplicationsList from './pages/ApplicationsList';
-import CreateApplication from './pages/CreateApplication';
-import JobDetail from './pages/JobDetail'
+import ApplicationsList from './pages/Job/ApplicationsList';
+import CreateJob from './pages/Job/CreateApplication';
+import JobDetail from './pages/Job/JobDetail'
+import PaymentPage from './pages/Job/PaymentPage'
+
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
 
@@ -53,11 +55,12 @@ function App() {
           } />
           <Route path="/create" element={
             <ProtectedRoute>
-              <CreateApplication />
+              <CreateJob />
             </ProtectedRoute>
           } />
           <Route path="/applications/job/:jobId" element={<JobDetail />} />
           <Route path="/" element={<LandingPage />} />
+          <Route path="/payment/:id" element={<PaymentPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

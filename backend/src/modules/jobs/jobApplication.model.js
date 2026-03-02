@@ -1,19 +1,28 @@
 import mongoose from "mongoose";
 
-// Application Model
-const applicationSchema = new mongoose.Schema({
-  jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job' },
-  jobseekerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  status: { type: String, default: 'pending' },
-  appliedAt: { type: Date, default: Date.now },
-  resumeUrl: String
-}, {
-  collection: 'job_applications' 
-});
-
-const JobApplicationModel = mongoose.model(
-  "JobApplication",
-  applicationSchema
+const applicationSchema = new mongoose.Schema(
+  {
+    jobId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Job",
+      required: true,
+    },
+    jobseekerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "accepted", "rejected"],
+      default: "pending",
+    },
+    resumeUrl: String,
+  },
+  {
+    timestamps: true,
+    collection: "job_applications",
+  }
 );
 
-export default JobApplicationModel;
+export default mongoose.model("JobApplication", applicationSchema);

@@ -12,7 +12,7 @@ import { authRouter } from "./modules/auth/auth.router.js";
 import { cvRouter } from "./modules/cv/cv.router.js";
 import { userRouter } from "./modules/users/user.router.js";
 
-import applicationRouter from "./modules/jobs/job.router.js";
+import jobRouter from "../src/modules/jobs/job.router.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,7 +52,7 @@ app.use(
 app.use("/api/auth", authRouter);
 app.use("/api/cv", cvRouter);
 app.use("/api/users", userRouter);
-app.use("/api/applications", applicationRouter);
+app.use("/api/jobs", jobRouter);
 
 
 // ===== ERROR HANDLER =====
