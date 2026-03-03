@@ -35,15 +35,11 @@ export const getCompanyApplicants = async (req, res) => {
     }
 };
 
-export const setInterviewDate = async (req, res) => {
+export const scheduleInterview = async (req, res) => {
     try {
-        console.log("REQ.USER:", req.user);
-
         const recruiterId = req.user?.userId;
         if (!recruiterId) {
-            return res.status(401).json({
-                message: "Unauthorized",
-            });
+            return res.status(401).json({ message: "Unauthorized" });
         }
 
         const { id } = req.params;
@@ -69,17 +65,12 @@ export const setInterviewDate = async (req, res) => {
             });
         }
 
-        // Kiểm tra đúng recruiter của job
         if (job.recruiterId.toString() !== recruiterId.toString()) {
-            return res.status(403).json({
-                message: "Forbidden",
-            });
+            return res.status(403).json({ message: "Forbidden" });
         }
 
-        // ✅ Set ngày phỏng vấn
+        // ✅ Set interview
         application.interviewDate = new Date(interviewDate);
-
-        // ✅ Đổi status sang interview
         application.status = "interview";
 
         await application.save();
@@ -90,11 +81,56 @@ export const setInterviewDate = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("SERVER ERROR:", error);
         return res.status(500).json({
             message: error.message,
         });
     }
 };
+
+export const rejectApplication = async (req, res) => {
+    try {
+        const recruiterId = req.user?.userId;
+        if (!recruiterId) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const { id } = req.params;
+
+        const application = await JobApplication.findById(id);
+        if (!application) {
+            return res.status(404).json({
+                message: "Application not found",
+            });
+        }
+
+        const job = await Job.findById(application.jobId);
+        if (!job) {
+            return res.status(404).json({
+                message: "Job not found",
+            });
+        }
+
+        if (job.recruiterId.toString() !== recruiterId.toString()) {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+
+        // ✅ Reject
+        application.status = "rejected";
+        application.interviewDate = null;
+
+        await application.save();
+
+        return res.status(200).json({
+            message: "Application rejected successfully",
+            data: application,
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 
 

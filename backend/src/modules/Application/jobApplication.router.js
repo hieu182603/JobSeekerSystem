@@ -1,18 +1,33 @@
 import express from "express";
-import { getCompanyApplicants, setInterviewDate } from "./jobApplication.controller.js";
+import {
+    getCompanyApplicants,
+    scheduleInterview,
+    rejectApplication
+} from "./jobApplication.controller.js";
+
 import { authMiddleware } from "../../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-// Lấy tất cả ứng viên apply vào các job của công ty
+// 🔹 Lấy tất cả ứng viên của company
 router.get(
     "/company/applicants",
-    authMiddleware, // bắt buộc login
+    authMiddleware,
     getCompanyApplicants
 );
+
+// 🔹 Đặt lịch phỏng vấn
 router.put(
     "/:id/interview",
     authMiddleware,
-    setInterviewDate
+    scheduleInterview
 );
+
+// 🔹 Reject ứng viên
+router.put(
+    "/:id/reject",
+    authMiddleware,
+    rejectApplication
+);
+
 export default router;
