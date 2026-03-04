@@ -25,13 +25,8 @@ export default function Login() {
             setError(result.error.message);
             setLoading(false);
         } else {
-            const role = result.user?.role;
-            if (role === 'ADMIN' || role === 'EMPLOYER') {
-                navigate('/dashboard');
-            } else {
-                // JOB_SEEKER
-                navigate('/');
-            }
+            // Success -> Redirect to dashboard
+            navigate('/dashboard');
         }
     };
 

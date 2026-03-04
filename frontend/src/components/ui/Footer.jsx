@@ -1,6 +1,5 @@
 
 import { Briefcase, Facebook, Linkedin, Twitter, Instagram } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 export default function Footer() {
     return (
@@ -44,7 +43,7 @@ export default function Footer() {
                     <div>
                         <h3 className="text-white font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Ứng viên</h3>
                         <ul className="space-y-2 text-xs sm:text-sm">
-                            <li><Link to="/jobs" className="hover:text-cyan-400 transition-colors">Tìm việc làm</Link></li>
+                            <li><a href="#" className="hover:text-cyan-400 transition-colors">Tìm việc làm</a></li>
                             <li><a href="#" className="hover:text-cyan-400 transition-colors">Công ty hàng đầu</a></li>
                             <li><a href="#" className="hover:text-cyan-400 transition-colors">Cẩm nang nghề nghiệp</a></li>
                             <li><a href="#" className="hover:text-cyan-400 transition-colors">Công cụ tạo CV</a></li>

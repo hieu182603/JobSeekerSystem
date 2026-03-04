@@ -5,6 +5,7 @@ import Job from "./job.model.js";
 
 const router = express.Router();
 
+<<<<<<< HEAD
 /* ===== PUBLIC: Tìm kiếm tất cả job ===== */
 router.get("/search", async (req, res) => {
   try {
@@ -65,6 +66,8 @@ router.get("/search", async (req, res) => {
   }
 });
 
+=======
+>>>>>>> e75327334c6ed739186797c5721fd6c361328bc4
 /* ===== JOB ===== */
 router.post("/", authMiddleware, async (req, res) => {
     try {
@@ -99,6 +102,7 @@ router.get("/job-application", authMiddleware, controller.getMyJobs);
 
 router.patch("/:jobId/toggle-status", authMiddleware, controller.toggleJobStatus);
 
+<<<<<<< HEAD
 /* ===== PUBLIC: Job detail cho job seeker ===== */
 router.get("/:jobId", async (req, res) => {
   try {
@@ -136,5 +140,7 @@ router.get("/:jobId", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+=======
+>>>>>>> e75327334c6ed739186797c5721fd6c361328bc4
 
 export default router;
