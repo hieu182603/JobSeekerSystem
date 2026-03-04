@@ -1,0 +1,97 @@
+
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import LandingPage from './pages/LandingPage';
+import CVUpload from './pages/CVUpload';
+import Profile from './pages/Profile';
+import ApplicationsList from './pages/Job/ApplicationsList';
+import CreateJob from './pages/Job/CreateApplication';
+import JobDetail from './pages/Job/JobDetail'
+import PaymentPage from './pages/Job/PaymentPage'
+import ManageCandidates from './pages/Job/ManageCandidates'
+import JobSearch from './pages/JobSearch'
+import PublicJobDetail from './pages/Job/PublicJobDetail'
+import MyApplications from './pages/MyApplications'
+
+function ProtectedRoute({ children }) {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="/cv-upload" element={
+            <ProtectedRoute>
+              <CVUpload />
+            </ProtectedRoute>
+          } />
+          <Route path="/job-application" element={
+            <ProtectedRoute>
+              <ApplicationsList />
+            </ProtectedRoute>
+          } />
+          <Route path="/create" element={
+            <ProtectedRoute>
+              <CreateJob />
+            </ProtectedRoute>
+          } />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/jobs" element={<JobSearch />} />
+          <Route path="/jobs/:jobId" element={<PublicJobDetail />} />
+          <Route path="/my-applications" element={
+            <ProtectedRoute>
+              <MyApplications />
+            </ProtectedRoute>
+          } />
+          <Route path="/payment/:id" element={<PaymentPage />} />
+          <Route
+            path="/job-applications/:jobId"
+            element={
+              <ProtectedRoute>
+                <JobDetail />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/candidate"
+            element={
+              <ProtectedRoute>
+                <ManageCandidates />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
+
+export default App;
+
