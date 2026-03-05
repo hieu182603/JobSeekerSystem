@@ -27,11 +27,7 @@ const createJob = async (req, res) => {
 /* ========================= */
 const applyJob = async (req, res) => {
   try {
-<<<<<<< HEAD
-    const { jobId, resumeUrl, coverLetter } = req.body;
-=======
     const { jobId, resumeUrl } = req.body;
->>>>>>> e75327334c6ed739186797c5721fd6c361328bc4
     const jobseekerId = req.user.userId; // 🔥 lấy từ token
 
     if (!mongoose.Types.ObjectId.isValid(jobId)) {
@@ -59,14 +55,8 @@ const applyJob = async (req, res) => {
     const application = await JobApplication.create({
       jobId,
       jobseekerId,
-<<<<<<< HEAD
-      recruiterId: job.recruiterId,
-      resumeUrl,
-      coverLetter: coverLetter || '',
-=======
       recruiterId: job.recruiterId, // lưu recruiter luôn
       resumeUrl,
->>>>>>> e75327334c6ed739186797c5721fd6c361328bc4
       status: "pending",
     });
 

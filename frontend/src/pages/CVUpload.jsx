@@ -1,30 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react'; // Đã dọn dẹp trùng lặp
+import { useNavigate } from 'react-router-dom'; // Đã dọn dẹp trùng lặp
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import {
     Upload, FileText, Trash2, Eye, Download,
     CheckCircle, AlertCircle, Loader2, ChevronRight,
-    Shield, Zap, Clock, RefreshCw, FilePlus2
-} from 'lucide-react';
-import Header from '../components/ui/Header';
-import Footer from '../components/ui/Footer';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
-import {
-    Upload,
-    FileText,
-    Trash2,
-    Eye,
-    Download,
-    CheckCircle,
-    AlertCircle,
-    ArrowLeft,
-    Loader2,
+    ArrowLeft // Thêm ArrowLeft vào đây
 } from 'lucide-react';
 
+// Khai báo API URL
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
 export default function CVUpload() {
@@ -165,7 +149,7 @@ export default function CVUpload() {
     return (
         <div className="min-h-screen bg-gray-50">
             <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-                {/* Header */}
+                {/* Header Section */}
                 <div className="flex items-center gap-4 mb-8">
                     <button
                         onClick={() => navigate('/dashboard')}
@@ -179,13 +163,14 @@ export default function CVUpload() {
                     </div>
                 </div>
 
-                {/* Message */}
+                {/* Message Alert */}
                 {message && (
                     <div
-                        className={`mb-6 flex items-center gap-3 p-4 rounded-lg ${message.type === 'success'
+                        className={`mb-6 flex items-center gap-3 p-4 rounded-lg ${
+                            message.type === 'success'
                                 ? 'bg-green-50 text-green-700 border border-green-200'
                                 : 'bg-red-50 text-red-700 border border-red-200'
-                            }`}
+                        }`}
                     >
                         {message.type === 'success' ? (
                             <CheckCircle className="w-5 h-5 flex-shrink-0" />
@@ -196,7 +181,7 @@ export default function CVUpload() {
                     </div>
                 )}
 
-                {/* CV hiện tại */}
+                {/* Current CV Info */}
                 {cvInfo?.hasCV && (
                     <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
                         <h2 className="text-lg font-semibold text-gray-900 mb-4">CV hiện tại</h2>
@@ -218,22 +203,19 @@ export default function CVUpload() {
                                     onClick={handleView}
                                     className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"
                                 >
-                                    <Eye className="w-4 h-4" />
-                                    Xem
+                                    <Eye className="w-4 h-4" /> Xem
                                 </button>
                                 <button
                                     onClick={handleDownload}
                                     className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                                 >
-                                    <Download className="w-4 h-4" />
-                                    Tải về
+                                    <Download className="w-4 h-4" /> Tải về
                                 </button>
                                 <button
                                     onClick={handleDelete}
                                     className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                 >
-                                    <Trash2 className="w-4 h-4" />
-                                    Xóa
+                                    <Trash2 className="w-4 h-4" /> Xóa
                                 </button>
                             </div>
                         </div>
@@ -251,10 +233,11 @@ export default function CVUpload() {
                         onDragLeave={handleDrag}
                         onDragOver={handleDrag}
                         onDrop={handleDrop}
-                        className={`border-2 border-dashed rounded-xl p-8 sm:p-12 text-center transition-colors cursor-pointer ${dragActive
+                        className={`border-2 border-dashed rounded-xl p-8 sm:p-12 text-center transition-colors cursor-pointer ${
+                            dragActive
                                 ? 'border-cyan-400 bg-cyan-50'
                                 : 'border-gray-300 hover:border-cyan-400 hover:bg-gray-50'
-                            }`}
+                        }`}
                         onClick={() => document.getElementById('cv-input').click()}
                     >
                         <input
