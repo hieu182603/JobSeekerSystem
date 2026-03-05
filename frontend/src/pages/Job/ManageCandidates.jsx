@@ -110,44 +110,6 @@ export default function ManageCandidates() {
         });
     };
 
-    const handleReject = async (id) => {
-        if (!window.confirm("Bạn có chắc muốn reject ứng viên này?")) return;
-
-        try {
-            const token = sessionStorage.getItem("token");
-            if (!token) {
-                alert("Bạn chưa đăng nhập");
-                return;
-            }
-
-            await axios.put(
-                `http://localhost:4000/api/applications/${id}/reject`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            alert("Đã reject ứng viên");
-
-            // Update UI
-            setCandidates(prev =>
-                prev.map(item =>
-                    item._id === id
-                        ? { ...item, status: "rejected", interviewDate: null }
-                        : item
-                )
-            );
-
-        } catch (err) {
-            console.error(err.response?.data || err);
-            alert("Có lỗi xảy ra");
-        }
-    };
-
-
 
     return (
         <div className="flex min-h-screen bg-[#F8FAFC]">
@@ -218,7 +180,7 @@ export default function ManageCandidates() {
                                 <th className="text-left p-4">Ngày nộp</th>
                                 <th className="text-left p-4">Ngày phỏng vấn</th>
                                 <th className="text-left p-4">Trạng thái</th>
-                                <th className="text-right p-4">Action</th>
+                                <th className="text-left p-4">Action</th>
 
                             </tr>
                         </thead>
@@ -274,15 +236,8 @@ export default function ManageCandidates() {
                                             </span>
                                         </td>
                                         <td className="p-4">
-                                            <div className="flex items-center justify-end gap-2">
-                                                {c.status === "pending" && (
-                                                    <button
-                                                        onClick={() => handleReject(c._id)}
-                                                        className="inline-flex items-center gap-1 px-3 py-1 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600 transition"
-                                                    >
-                                                        Reject
-                                                    </button>
-                                                )}
+                                            <div className="flex items-center gap-2">
+
                                                 {/* XEM CV */}
                                                 {c.resumeUrl ? (
                                                     <a
@@ -317,7 +272,6 @@ export default function ManageCandidates() {
                     {selectedCandidate && (
                         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
                             <div className="bg-white rounded-xl p-6 w-96 shadow-lg relative">
-
 
                                 {/* Nút X đóng modal */}
                                 <button

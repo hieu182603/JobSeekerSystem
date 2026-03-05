@@ -22,6 +22,7 @@ const applicationSchema = new mongoose.Schema(
       default: null,
     },
     resumeUrl: String,
+    coverLetter: { type: String, default: '' },
   },
   {
     timestamps: true,
