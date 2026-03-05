@@ -1,5 +1,6 @@
 
 import { MapPin, DollarSign, Bookmark } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const jobs = [
     {
@@ -40,9 +41,9 @@ export default function JobListings() {
                         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Việc làm nổi bật</h2>
                         <p className="text-sm sm:text-base text-gray-600">Khám phá những vị trí việc làm hấp dẫn nhất</p>
                     </div>
-                    <a href="#" className="text-cyan-500 hover:text-cyan-600 font-medium text-sm whitespace-nowrap">
+                    <Link to="/jobs" className="text-cyan-500 hover:text-cyan-600 font-medium text-sm whitespace-nowrap">
                         Xem tất cả →
-                    </a>
+                    </Link>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">

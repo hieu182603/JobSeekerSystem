@@ -56,7 +56,7 @@ export function AuthProvider({ children }) {
       }
 
       setUser(user);
-      return { error: null };
+      return { error: null, user };
     } catch (err) {
       console.error("Login failed:", err);
       return {
